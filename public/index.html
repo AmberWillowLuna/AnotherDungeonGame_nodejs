@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shared Map with Chat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="grid-container hidden" id="grid"></div>
+
+    <div class="sidebar">
+      <div class="player-form" id="playerForm">
+        <h3>Choose nickname and color</h3>
+        <input type="text" id="nickname" placeholder="Twój nick" maxlength="16">
+        <input type="color" id="color" value="#ff0000">
+        <button id="joinBtn">Join</button>
+      </div>
+
+      <div class="chat hidden" id="chat">
+        <div class="messages" id="messages"></div>
+        <input type="text" id="messageInput" placeholder="Napisz wiadomość...">
+        <button id="sendBtn">Wyślij</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="client.js"></script>
+</body>
+</html>
