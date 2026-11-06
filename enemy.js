@@ -9,23 +9,32 @@ class Enemy(){
     #loot;
     #power;
     constructor(){
+        this.#maxhp = 1;
+        this.#hp = 1;
+        this.#name = "Enemy";
+        this.#sprite = null;
+        this.#weapon = null;
+        this.#loot = 0;
+        this.#power = 1;
     }
 
-    hit(val){
+    hit(val, player){
     this.#hp -= val;
-    if this.#hp<1
-      player.#gold = 0
-  }
+    if (this.#hp < 1) {
+        player.earn(this.#loot);
+    }
+    }
 }
 
-class Goblin(Enemy){
+class Goblin extends Enemy{
     constructor(){
-        #maxhp = 2;
-        #hp = 2;
-        #name = "Goblin";
-        #sprite = null;
-        #weapon = new SharpMetal();
-        #loot = 4;
-        #power = 1;
+        super();
+        this.#maxhp = 2;
+        this.#hp = 2;
+        this.#name = "Goblin";
+        this.#sprite = null;
+        this.#weapon = new SharpMetal();
+        this.#loot = 4;
+        this.#power = 1;
     }
 }

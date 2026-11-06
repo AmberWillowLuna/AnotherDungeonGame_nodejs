@@ -1,12 +1,16 @@
-const Room = require('./NothingRoom.js');
+const NothingRoom = require('./NothingRoom.js');
 
-class EscapeRoom(Room){
-
+class EscapeRoom extends NothingRoom{
+    #type;
+    #map;
     constructor(){
-        #type=2
+        super();
+        this.#type=2
 
-        rand = Math.floor(Math.rand() * 2);
-        #map = [ [0,0,0,0,0,0,0,0,0,0],
+        let v = new NothingRoom();
+        this.#map = v.getMap();
+        let rand = Math.floor(Math.random() * 2);
+        this.#map = [ [0,0,0,0,0,0,0,0,0,0],
                  [0,0,0,0,0,0,0,0,0,0],
                  [0,0,0,0,0,0,0,0,0,0],
                  [2,0,0,0,0,0,0,0,0,1],
@@ -18,8 +22,8 @@ class EscapeRoom(Room){
                  [0,0,0,0,0,0,0,0,0,0]
             ]
 
-        if rand == 0{
-        #map = [ [0,0,0,0,0,0,0,0,0,0],
+        if (rand == 0) {
+        this.#map = [ [0,0,0,0,0,0,0,0,0,0],
                  [0,0,0,0,0,0,0,0,0,0],
                  [0,0,0,0,0,0,0,0,0,0],
                  [1,0,0,0,0,0,0,0,0,2],

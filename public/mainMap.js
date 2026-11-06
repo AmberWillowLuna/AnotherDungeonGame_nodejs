@@ -38,123 +38,32 @@ class MainMap extends Room{
         this.setType(0);
     }
 
-    eraseLobby(number){
-        x=width-1; // for 17..22
-        y = height -1; // for 22..28
+    // Which cells belong to which lobby: [[y, x], ...]
+    #lobbyCells(number){
+        const x = this.#width - 1;   // last column - lobbies 17..21
+        const y = this.#height - 1;  // last row - lobbies 22..28
         switch(number){
-            case 17:
-                // fixed positions for lobby 17 should be:
-                // x - alwyas last, y - idx 1,2,3,4
-                //setValue(y, x, val)
-                this.setValue(1, x, 0);
-                this.setValue(2, x, 0);
-                this.setValue(3, x, 0);    
-                this.setValue(4, x, 0);               
-            break;
-            case 18:
-                this.setValue(6, x, 0);
-                this.setValue(7, x, 0);
-                this.setValue(8, x, 0);    
-                this.setValue(9, x, 0);   
-            break;
-            case 19:
-                this.setValue(11, x, 0);
-                this.setValue(12, x, 0);
-                this.setValue(13, x, 0);    
-                this.setValue(14, x, 0);   
-            break;
-            case 20:
-                this.setValue(16, x, 0);
-                this.setValue(17, x, 0);
-                this.setValue(18, x, 0);    
-                this.setValue(19, x, 0);   
-            break;
-            case 21:
-                this.setValue(22, x, 0);
-            break;
-            case 22:
-                this.setValue(y, x, 0);
-            break;
-            case 23:
-                this.setValue(y, x-2, 0);
-            break;
-            case 24:
-                this.setValue(y, x-4, 0);
-            break;
-            case 25:
-                this.setValue(y, x-6, 0);
-            break;
-            case 26:
-                this.setValue(y, x-8, 0);
-            break;
-            case 27:
-                this.setValue(y, x-10, 0);
-            break;
-            case 28:
-                this.setValue(y, x-12, 0);
-            break;
+            case 17: return [[1, x], [2, x], [3, x], [4, x]];
+            case 18: return [[6, x], [7, x], [8, x], [9, x]];
+            case 19: return [[11, x], [12, x], [13, x], [14, x]];
+            case 20: return [[16, x], [17, x], [18, x], [19, x]];
+            case 21: return [[22, x]];
+            default:
+                // 22..28 stand in the last row, every 2nd cell going left
+                if (number >= 22 && number <= 28) return [[y, x - 2 * (number - 22)]];
+                return [];
         }
     }
 
+    // puts the lobby back on the map (the cells get the lobby number)
     setLobby(number){
-        x=width-1; // for 17..22
-        y = height -1; // for 22..28
-        switch(number){
-            case 17:
-                // fixed positions for lobby 17 should be:
-                // x - alwyas last, y - idx 1,2,3,4
-                //setValue(y, x, val)
-                this.setValue(1, x, number);
-                this.setValue(2, x, number);
-                this.setValue(3, x, number);    
-                this.setValue(4, x, number);               
-            break;
-            case 18:
-                this.setValue(6, x, number);
-                this.setValue(7, x, number);
-                this.setValue(8, x, number);    
-                this.setValue(9, x, number);   
-            break;
-            case 19:
-                this.setValue(11, x, number);
-                this.setValue(12, x, number);
-                this.setValue(13, x, number);    
-                this.setValue(14, x, number);   
-            break;
-            case 20:
-                this.setValue(16, x, number);
-                this.setValue(17, x, number);
-                this.setValue(18, x, number);    
-                this.setValue(19, x, number);   
-            break;
-            case 21:
-                this.setValue(22, x, number);
-            break;
-            case 22:
-                this.setValue(y, x, number);
-            break;
-            case 23:
-                this.setValue(y, x-2, number);
-            break;
-            case 24:
-                this.setValue(y, x-4, number);
-            break;
-            case 25:
-                this.setValue(y, x-6, number);
-            break;
-            case 26:
-                this.setValue(y, x-8, number);
-            break;
-            case 27:
-                this.setValue(y, x-10, number);
-            break;
-            case 28:
-                this.setValue(y, x-12, number);
-            break;
-        }
+        for (const [y, x] of this.#lobbyCells(number)) this.setValue(y, x, number);
     }
 
-
+    // removes the lobby from the map (the cells become basic ground)
+    eraseLobby(number){
+        for (const [y, x] of this.#lobbyCells(number)) this.setValue(y, x, 0);
+    }
 }
 
 module.exports =  MainMap;

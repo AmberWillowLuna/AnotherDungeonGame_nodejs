@@ -1,16 +1,23 @@
-const Room = require('./NothingRoom.js');
+const NothingRoom = require('./NothingRoom.js');
 
-class TreasureRoom(NothingRoom){
+class TreasureRoom extends NothingRoom{
+    #type;
+    #map;
     constructor(number, rarity){
         super();
-        if length(rarity)==number{
-            #type = 3;
 
-            for(i=0;i<number;i++){
-                #map[Math.floor(Math.rand() * 4)+3][Math.floor(Math.rand() * 4)+3] = 6+rarity[i]; //rarity is an array with rarity of each chest
+        let v = new NothingRoom();
+        this.#map = v.getMap();
+        if (rarity!=null){
+
+            if (rarity.length() == number){
+                this.#type = 3;
+
+                for(let i=0;i<number;i++){
+                    this.#map.setValue(Math.floor(Math.random() * 4)+3, Math.floor(Math.random() * 4)+3, 6+rarity[i]); //rarity is an array with rarity of each chest
+                }
             }
         }
-
     }
 }
 

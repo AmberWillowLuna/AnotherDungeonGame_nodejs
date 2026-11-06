@@ -19,7 +19,7 @@ export default class Player {
   constructor(name, color) {
     this.#maxhp = 6;
     this.#hp = 6;
-    this.#heals = 3;
+    this.#heals = [];
     this.#weapons = [];
     this.#tools = [];
     this.#trinkets = [];

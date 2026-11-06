@@ -1,13 +1,15 @@
-const Room = require('./public/Room.js');
+const Room = require('../public/Room.js');
 
 class NothingRoom extends Room {
+    #type;
+    #map;
     constructor(){
         super();
-        #type=1;
+        this.#type=1;
 
-        rand = Math.floor(Math.rand() * 7);
+        let rand = Math.floor(Math.random() * 7);
 
-        #map = [ [0,0,0,1,1,1,1,0,0,0],
+        this.#map = [ [0,0,0,1,1,1,1,0,0,0],
                  [0,0,0,0,0,0,0,0,0,0],
                  [0,0,0,0,0,0,0,0,0,0],
                  [1,0,0,0,0,0,0,0,0,1],
@@ -20,7 +22,7 @@ class NothingRoom extends Room {
             ]
         switch(rand){
             case 1:
-                #map = [[0,0,0,0,0,0,0,0,0,0],
+                this.#map = [[0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
                         [1,0,0,0,0,0,0,0,0,1],
@@ -33,7 +35,7 @@ class NothingRoom extends Room {
                     ]
             break;
             case 2:
-                #map = [[0,0,0,0,0,0,0,0,0,0],
+                this.#map = [[0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
                         [1,0,0,0,0,0,0,0,0,0],
@@ -46,7 +48,7 @@ class NothingRoom extends Room {
                     ]
             break;                
             case 3:
-                #map = [[0,0,0,1,1,1,1,0,0,0],
+                this.#map = [[0,0,0,1,1,1,1,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
                         [1,0,0,0,0,0,0,0,0,0],
@@ -59,7 +61,7 @@ class NothingRoom extends Room {
                     ]
             break;   
             case 4:
-                #map = [[0,0,0,1,1,1,1,0,0,0],
+                this.#map = [[0,0,0,1,1,1,1,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,1],
@@ -72,7 +74,7 @@ class NothingRoom extends Room {
                     ]
             break;   
             case 5:
-                #map = [[0,0,0,1,1,1,1,0,0,0],
+                this.#map = [[0,0,0,1,1,1,1,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
@@ -85,7 +87,7 @@ class NothingRoom extends Room {
                     ]
             break;
             case 6:
-                #map = [[0,0,0,0,0,0,0,0,0,0],
+                this.#map = [[0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,1],

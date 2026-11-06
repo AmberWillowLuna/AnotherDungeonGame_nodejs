@@ -1,29 +1,33 @@
-import Player from './player.js';
+import Player from './Player.js'; // the file is called Player.js (capital P)
 
 const socket = io(); // "io" comes from /socket.io/socket.io.js
-
-const GRID_SIZE = 25;
 
 // number in the map -> cell color. Add new tiles here!
 const TILE_COLORS = {
   0: 'white',
-  17: 'lightgreen',
-  18: 'lightgreen',
-  19: 'lightgreen',
-  20: 'lightgreen',
-  21: 'green',
-  22: 'green',
-  23: 'green',
-  24: 'green',
-  25: 'green',
-  26: 'green',
-  27: 'green',
-  28: 'green',
+  1: 'lightblue',   // next room
+  2: 'orange',      // exit of the dungeon
+  6: 'peru',        // chest (common)
+  7: 'silver',      // chest (uncommon)
+  8: 'gold',        // chest (rare)
+  15: 'gray',       // sus wall
+  16: 'darkgray',   // statue
+  17: 'lightgreen', 18: 'lightgreen', 19: 'lightgreen', 20: 'lightgreen',
+  21: 'green', 22: 'green', 23: 'green', 24: 'green',
+  25: 'green', 26: 'green', 27: 'green', 28: 'green',
 };
+
+// optional symbol drawn on the tile
+const TILE_LABELS = { 1: '→', 2: '↑', 6: 'c', 7: 'c', 8: 'c', 15: 'r', 16: 's' };
 
 // --- HTML elements ---
 const gridContainer = document.getElementById('grid');
 const chatBox = document.getElementById('chat');
+const statusBox = document.getElementById('status');
+const placeText = document.getElementById('place');
+const countdownText = document.getElementById('countdown');
+const inventoryBox = document.getElementById('inventory');
+const inventoryList = document.getElementById('inventoryList');
 const playerForm = document.getElementById('playerForm');
 const nicknameInput = document.getElementById('nickname');
 const colorInput = document.getElementById('color');
@@ -33,28 +37,37 @@ const sendBtn = document.getElementById('sendBtn');
 const messagesContainer = document.getElementById('messages');
 
 // --- State ---
-let map = null;          // 25x25 array, sent by the server
-let players = {};        // everybody online, sent by the server
+let map = null;          // the map of the place we are in (lobby or dungeon room), sent by the server
+let players = {};        // everybody in the same place, sent by the server
 let localPlayer = null;  // null until the user joins
+const countdowns = {};   // lobby number -> seconds left
 
 // --- Drawing ---
 function generateGrid() {
+  const rows = map.length;
+  const cols = map[0].length; // dungeon rooms are 10x10, the lobby is 25x25
+  gridContainer.style.gridTemplateColumns = `repeat(${cols}, 20px)`;
+  gridContainer.style.gridTemplateRows = `repeat(${rows}, 20px)`;
   gridContainer.innerHTML = '';
-  for (let row = 0; row < GRID_SIZE; row++) {
-    for (let col = 0; col < GRID_SIZE; col++) {
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const tile = map[row][col];
       const cell = document.createElement('div');
       cell.className = 'grid-cell';
-      cell.style.backgroundColor = TILE_COLORS[map[row][col]] || 'white';
+      cell.style.backgroundColor = TILE_COLORS[tile] || 'white';
+      cell.textContent = TILE_LABELS[tile] || '';
       gridContainer.appendChild(cell);
     }
   }
 }
 
 function renderPlayers() {
+  if (!map) return;
   document.querySelectorAll('.player').forEach(el => el.remove());
+  const cols = map[0].length;
   Object.values(players).forEach((player) => {
     const [x, y] = player.pos;
-    const cell = gridContainer.children[y * GRID_SIZE + x];
+    const cell = gridContainer.children[y * cols + x];
     if (!cell) return;
     const dot = document.createElement('div');
     dot.className = 'player';
@@ -62,6 +75,34 @@ function renderPlayers() {
     dot.style.backgroundColor = `rgb(${player.color.join(',')})`;
     cell.appendChild(dot);
   });
+}
+
+function renderCountdowns() {
+  if (countdownText==null) return; // Guard against missing DOM element
+  countdownText.textContent = Object.entries(countdowns)
+    .map(([lobby, seconds]) => `Lobby ${lobby} starts in ${seconds}s`)
+    .join('  |  ');
+}
+
+function renderInventory(inv) {
+  if (inventoryList==null) return; // Guard against missing DOM element
+  inventoryList.innerHTML = '';
+  const lines = [
+    ['Gold', inv.gold],
+    ['Heals', inv.heals],
+    [`Weapons (${inv.weapons.length}/${inv.limits.weapons})`, inv.weapons.map(i => i.name).join(', ') || '-'],
+    [`Tools (${inv.tools.length}/${inv.limits.tools})`, inv.tools.map(i => i.name).join(', ') || '-'],
+    [`Trinkets (${inv.trinkets.length}/${inv.limits.trinkets})`, inv.trinkets.map(i => i.name).join(', ') || '-'],
+    [`Spells (${inv.spells.length}/${inv.limits.spells})`, inv.spells.map(i => i.name).join(', ') || '-'],
+  ];
+  for (const [label, value] of lines) {
+    const row = document.createElement('div');
+    const bold = document.createElement('strong');
+    bold.textContent = label + ': ';
+    row.appendChild(bold);
+    row.appendChild(document.createTextNode(String(value)));
+    inventoryList.appendChild(row);
+  }
 }
 
 // --- Join ---
@@ -80,14 +121,14 @@ joinBtn.addEventListener('click', () => {
   socket.emit('newPlayer', { name: localPlayer.getName(), color: localPlayer.getColor() });
 
   // Hide the form, show the game
+  if (playerForm==null) return; // Guard against missing DOM element
   playerForm.classList.add('hidden');
-  gridContainer.classList.remove('hidden');
-  chatBox.classList.remove('hidden');
+  [gridContainer, chatBox, statusBox, inventoryBox].forEach(el => el.classList.remove('hidden'));
 });
 
 // --- Movement (WASD) ---
 document.addEventListener('keydown', (e) => {
-  if (!localPlayer) return;
+  if (!localPlayer || !map) return;
 
   // If the user is typing in the chat (or any input), don't move
   const tag = e.target.tagName;
@@ -106,22 +147,10 @@ document.addEventListener('keydown', (e) => {
     default: return;
   }
 
-  x = Math.max(0, Math.min(GRID_SIZE - 1, x));
-  y = Math.max(0, Math.min(GRID_SIZE - 1, y));
+  x = Math.max(0, Math.min(map[0].length - 1, x));
+  y = Math.max(0, Math.min(map.length - 1, y));
 
-  //check map[y][x] (17 = enter the dungeon)
-  if (map[y][x]==17){
-      //start countdown for game
-      //all players standing on 17 should join the same game
-      //new players should still spawn at the beggining
-      //until the lobby 17 is free - the elements on main map should
-      //be set to 0
-      //methods for main mapp - eraseLobby(number)
-      //setLobby(number) - with fixed values
-  }
-
-
-  console.log('asking server to move to', x, y); // debug - delete later
+  // The server decides what the tile does (lobby countdown, chest, next room...)
   socket.emit('move', { x, y }); // the dot moves when the server answers with updatePlayers
 });
 
@@ -140,20 +169,31 @@ messageInput.addEventListener('keydown', (e) => {
 });
 
 // --- Server events ---
-socket.on('connect', () => console.log('connected to server')); // debug - delete later
-
-socket.on('init', (data) => {
-  map = data.map;
-  players = data.players;
+// The map we should show changed (joined, lobby opened/closed, new dungeon room, chest taken)
+socket.on('mapUpdate', ({ map: newMap, title, place }) => {
+  map = newMap;
+  placeText.textContent = title;
+  if (place === 'dungeon') {
+    for (const lobby in countdowns) delete countdowns[lobby]; // lobby timers are only for the lobby
+    renderCountdowns();
+  }
   generateGrid();
   renderPlayers();
 });
 
 socket.on('updatePlayers', (serverPlayers) => {
   players = serverPlayers;
-  console.log('players from server:', players); // debug - delete later
   renderPlayers();
 });
+
+// secondsLeft === null means: countdown was reset / finished
+socket.on('lobbyStatus', ({ lobby, secondsLeft }) => {
+  if (secondsLeft === null) delete countdowns[lobby];
+  else countdowns[lobby] = secondsLeft;
+  renderCountdowns();
+});
+
+socket.on('inventory', renderInventory);
 
 socket.on('chatMessage', ({ name, message }) => {
   const line = document.createElement('div');

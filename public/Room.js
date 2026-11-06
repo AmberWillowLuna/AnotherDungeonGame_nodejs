@@ -43,6 +43,7 @@ one block:
 20 - lobby 20
 21 - single player lobbies
 22... 24 - signle player lobbies
+25 - enemy block
 
 
 Type:

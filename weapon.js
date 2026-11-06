@@ -1,9 +1,9 @@
-class Weapon(){
+class Weapon{
     #value; //constant value
     #swing; //the roll value (1d6 roll default - so 6)
     #rarity; // -1 - not availabl for players 
      // then 0 is very common then the higher the more hard to get
-
+    #status; //if the weapon is broken or not
     #bonusValue; //
     #bonusSwing; //
     #bonusClass; //the class you have to play to get bonuses
@@ -18,76 +18,77 @@ class Weapon(){
         this.#status = True;
         this.#rarity = rarity;
         this.#breakability = breakability;
-        this.#dmg=1
+        this.#dmg=1;
     }
 
     use(){
-        bonus = Math.floor(Math.rand() * this.swing) + 1;
+        bonus = Math.floor(Math.random() * this.#swing) + 1;
 
-        if bonus = 1 and this.#breakability == "weak"
-            status = False
-        return this.#value+bonus
+        if (bonus == 1 && this.#breakability == "weak") {
+            this.#status = false;
+        }
+        return this.#value + bonus;
     }
 
     getValue(){
-        return this.#value
+        return this.#value;
     }
     
     specials(){
-        return
+        return;
     }
 }
 
-class Knife(Weapon){
+class Knife extends Weapon{
     constructor(){
         super(1, 4, 0, "weak")
     }
 }
 
-class SharpMetal(Weapon){
+class SharpMetal extends Weapon{
     constructor(){
         super(2,0,-1,"weak")
     }
 }
 
-class Knife(Weapon){
+class Knife extends Weapon{
     constructor(){
         super(1, 4, -1)
     }
 }
 
 
-class Boomerang(Weapon){
+class Boomerang extends Weapon{
     constructor(){
         super(1, 6, 1, "weak")
     }
 }
 
-class Dagger(Weapon){
+class Dagger extends Weapon{
     constructor(){
         super(2, 4, 1, "weak")
     }
 }
 
-class Stick(Weapon){
+class Stick extends Weapon{
     constructor(){
         super(2, 2, 1, "weak")
     }
 }
 
-class IceSpike(Weapon){
+class IceSpike extends Weapon{
     constructor(){
         super(3, 4, 2, "weak")
     }
 }
 
-class Bow(Weapon){
+class Bow extends Weapon{
     constructor(){
         super(4, 8, 4, "weak")
     }
 }
 
-class Sword(Weapon){
+class Sword extends Weapon{
     constructor(){
         super(5, 6, 5, "weak")
     }    
