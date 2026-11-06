@@ -44,8 +44,8 @@ const countdowns = {};   // lobby number -> seconds left
 
 // --- Drawing ---
 function generateGrid() {
-  const rows = map.length();
-  const cols = map[0].length(); // dungeon rooms are 10x10, the lobby is 25x25
+  const rows = map.length;
+  const cols = map[0].length; // dungeon rooms are 10x10, the lobby is 25x25
   gridContainer.style.gridTemplateColumns = `repeat(${cols}, 20px)`;
   gridContainer.style.gridTemplateRows = `repeat(${rows}, 20px)`;
   gridContainer.innerHTML = '';
@@ -64,7 +64,7 @@ function generateGrid() {
 function renderPlayers() {
   if (!map) return;
   document.querySelectorAll('.player').forEach(el => el.remove());
-  const cols = map[0].length();
+  const cols = map[0].length;
   Object.values(players).forEach((player) => {
     const [x, y] = player.pos;
     const cell = gridContainer.children[y * cols + x];
@@ -147,8 +147,8 @@ document.addEventListener('keydown', (e) => {
     default: return;
   }
 
-  x = Math.max(0, Math.min(map[0].length() - 1, x));
-  y = Math.max(0, Math.min(map.length() - 1, y));
+  x = Math.max(0, Math.min(map[0].length - 1, x));
+  y = Math.max(0, Math.min(map.length - 1, y));
 
   // The server decides what the tile does (lobby countdown, chest, next room...)
   socket.emit('move', { x, y }); // the dot moves when the server answers with updatePlayers
