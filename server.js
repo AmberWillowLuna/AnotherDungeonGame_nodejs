@@ -76,6 +76,7 @@ function refreshLobby(n) {
 
 function startCountdown(n) {
   if (countdowns[n]) return; // already running - don't restart it
+  console.log(`[lobby ${n}] someone stepped in - countdown started`);
   let secondsLeft = COUNTDOWN_SECONDS;
   io.to('main').emit('lobbyStatus', { lobby: n, secondsLeft });
 
@@ -85,13 +86,19 @@ function startCountdown(n) {
       io.to('main').emit('lobbyStatus', { lobby: n, secondsLeft });
     } else {
       stopCountdown(n);
-      launchDungeon(n);
+      try {
+        launchDungeon(n);
+      } catch (err) {
+        // a bug while launching must not kill the whole server
+        console.error(`[lobby ${n}] COULD NOT START THE DUNGEON:`, err);
+      }
     }
   }, 1000);
 }
 
 function stopCountdown(n) {
   if (!countdowns[n]) return;
+  console.log(`[lobby ${n}] countdown stopped`);
   clearInterval(countdowns[n]);
   delete countdowns[n];
   io.to('main').emit('lobbyStatus', { lobby: n, secondsLeft: null }); // null = hide it
@@ -101,6 +108,7 @@ function stopCountdown(n) {
 function launchDungeon(n) {
   const ids = playersInLobby(n);
   if (ids.length === 0) return;
+  console.log(`[lobby ${n}] launching a dungeon with ${ids.length} player(s)`);
 
   mainMap.eraseLobby(n); // lobby disappears from the map, nobody new can join
 
@@ -115,6 +123,7 @@ function launchDungeon(n) {
     moveToPlace(id, 'main', place);
   });
 
+  console.log(`[dungeon ${dungeonId}] created: ${dungeon.getTitle()}`);
   io.to(place).emit('mapUpdate', dungeonPayload(dungeon));
   io.to('main').emit('mapUpdate', mainPayload()); // the others see the lobby vanish
   broadcastPlayers(place);
@@ -133,6 +142,7 @@ function removeFromDungeon(id) {
 
   if (dungeon.isEmpty()) {
     delete dungeons[dungeonId];
+    console.log(`[dungeon ${dungeonId}] empty - lobby ${dungeon.getLobby()} is open again`);
     mainMap.setLobby(dungeon.getLobby());
     io.to('main').emit('mapUpdate', mainPayload());
   }
