@@ -5,15 +5,18 @@ const StatueRoom = require('./rooms/StatueRoom.js');
 const EnemyRoom = require('./rooms/EnemyRoom.js');
 const BossRoom = require('./rooms/BossRoom.js');
 
-const BOSS_FROM_LEVEL = 12; // after 12 rooms enemies/nothing get rarer and bosses appear
+//import Goblin from './enemy.js';
+const { Goblin } = require('./enemy.js');
+
+const BOSS_FROM_LEVEL = 10; // after 10 rooms enemies/nothing get rarer and bosses appear
 
 // ---------- the rules from your concept ----------
 // weights = % chance for each kind of room. Each table adds up to 100.
 function roomTable(level) {
   if (level < BOSS_FROM_LEVEL) {
-    return { nothing: 15, treasure: 30, escape: 15, enemy: 20, statue: 20 };
+    return { nothing: 15, treasure: 20, escape: 5, enemy: 50, statue: 10 };
   }
-  return { nothing: 10, treasure: 30, escape: 15, enemy: 15, statue: 20, boss: 10 };
+  return { nothing: 10, treasure: 20, escape: 5, enemy: 40, statue: 15, boss: 10 };
 }
 
 // Chest rarity: 0 common, 1 uncommon, 2 rare. Level dependent.
@@ -39,12 +42,13 @@ function pickWeighted(table) {
 
 function makeRoom(level) {
   switch (pickWeighted(roomTable(level))) {
-    case 'treasure': return new TreasureRoom(rollChestRarity(level));
-    case 'escape':   return new EscapeRoom();
-    case 'enemy':    return new EnemyRoom();
-    case 'statue':   return new StatueRoom(1 + Math.floor(Math.random() * 3));
-    case 'boss':     return new BossRoom();
-    default:         return new NothingRoom();
+
+      case 'treasure': return new TreasureRoom(rollChestRarity(level));
+      case 'escape':   return new EscapeRoom();
+      case 'enemy':    return new EnemyRoom();
+      case 'statue':   return new StatueRoom(1 + Math.floor(Math.random() * 3));
+      case 'boss':     return new BossRoom();
+      default:         return new NothingRoom();
   }
 }
 
@@ -54,12 +58,14 @@ class Dungeon {
   #level = 0;  // how many rooms were already passed
   #room;
   #playerIds;
+  #enemies;
   // #enemies; #bosses;  <- later
 
   constructor(lobby, playerIds) {
     this.#lobby = lobby;
     this.#playerIds = new Set(playerIds);
     this.#room = makeRoom(this.#level);
+    this.#enemies = [new Goblin()]; // later: spawn enemies based on room type
   }
 
   getLobby() { return this.#lobby; }
@@ -75,6 +81,7 @@ class Dungeon {
   spawnPoint(i) { return [3 + (i % 4), 9]; }
 
   nextRoom() {
+    console.log(`dungeon ${this.#lobby} - next room`);
     this.#level++;
     this.#room = makeRoom(this.#level);
   }

@@ -87,6 +87,9 @@ function startCountdown(n) {
     } else {
       stopCountdown(n);
       try {
+
+        //??
+        console.log(`[lobby ${n}] countdown finished - launching the dungeon`);
         launchDungeon(n);
       } catch (err) {
         // a bug while launching must not kill the whole server
@@ -148,6 +151,14 @@ function removeFromDungeon(id) {
   }
 }
 
+function enemyEncounter(id, p, dungeon, x, y) {
+  //get from dungeon.enemy 
+  let enemy = dungeon.getEnemies()[0]; //get the first enemy in the array
+  //start the encounter with the player and the enemy
+  //send the player and the enemy to the client
+  io.to(id).emit('enemyEncounter', { enemy: enemy, player: p });
+}
+
 // player walked on tile 2 - back to the main lobby
 function leaveDungeon(id) {
   const p = players[id];
@@ -185,6 +196,11 @@ function onDungeonTile(id, p) {
 
   if (tile === 1) return nextRoom(dungeonId);
   if (tile === 2) return leaveDungeon(id);
+  if (tile >= 6 && tile <= 14) return onChest(id, p, dungeon, x, y);
+  if (tile === 3) return; // merchant - not implemented yet
+  if (tile === 4) return; // enemy - not implemented yet
+  if (tile === 5) return; // boss - not implemented yet
+  if (tile === 100) EnemyEncounter(id, p, dungeon, x, y); // enemy encounter - not implemented yet
 
   const rarity = dungeon.takeChest(x, y); // null if it's not a chest
   if (rarity !== null) {
@@ -202,7 +218,7 @@ io.on('connection', (socket) => {
   console.log('Connected:', socket.id);
 
   // Player picked name + color
-  socket.on('newPlayer', ({ name, color } = {}) => {
+  socket.on('newPlayer', ({ name, color, class: pclass } = {}) => {
     if (players[socket.id]) return; // already joined
 
     const cleanName = String(name || '').trim().slice(0, 16);
@@ -213,6 +229,7 @@ io.on('connection', (socket) => {
     players[socket.id] = {
       name: cleanName,
       color: validColor ? color : [255, 0, 0],
+      class: pclass || 'barbarian',
       pos: [...SPAWN],
       dungeonId: null,
     };

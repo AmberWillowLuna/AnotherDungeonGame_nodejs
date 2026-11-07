@@ -6,15 +6,18 @@ const socket = io(); // "io" comes from /socket.io/socket.io.js
 const TILE_COLORS = {
   0: 'white',
   1: 'lightblue',   // next room
-  2: 'orange',      // exit of the dungeon
+  2: 'blue',      // exit of the dungeon
   6: 'peru',        // chest (common)
   7: 'silver',      // chest (uncommon)
   8: 'gold',        // chest (rare)
   15: 'gray',       // sus wall
-  16: 'darkgray',   // statue
+  16: 'orange',   // statue
   17: 'lightgreen', 18: 'lightgreen', 19: 'lightgreen', 20: 'lightgreen',
   21: 'green', 22: 'green', 23: 'green', 24: 'green',
   25: 'green', 26: 'green', 27: 'green', 28: 'green',
+  100: 'red', 101: 'red', 102: 'red', 103: 'red', 104: 'red', 105: 'red', 106: 'red', 107: 'red', 108: 'red', 109: 'red',
+  110: 'red', 111: 'red', 112: 'red', 113: 'red', 114: 'red', 115: 'red', 116: 'red', 117: 'red', 118: 'red', 119: 'red', //enemies
+  200: 'darkred', 201: 'darkred', 202: 'darkred', 203: 'darkred', 204: 'darkred', 205: 'darkred', 206: 'darkred', 207: 'darkred', 208: 'darkred', 209: 'darkred' //bosses
 };
 
 // optional symbol drawn on the tile
@@ -117,8 +120,13 @@ joinBtn.addEventListener('click', () => {
     parseInt(hex.substring(5, 7), 16),
   ];
 
-  localPlayer = new Player(nickname, color);
-  socket.emit('newPlayer', { name: localPlayer.getName(), color: localPlayer.getColor() });
+ // make class choosable element from:
+  //barbarian, wizard, palladin, rouge, bard;
+  const classInput = document.getElementById("classInput");
+  const pclass = classInput.value;
+  if (!pclass) return; // class is required
+  localPlayer = new Player(nickname, color, pclass);
+  socket.emit('newPlayer', { name: localPlayer.getName(), color: localPlayer.getColor(), class: localPlayer.getClass() });
 
   // Hide the form, show the game
   if (playerForm==null) return; // Guard against missing DOM element
@@ -203,4 +211,10 @@ socket.on('chatMessage', ({ name, message }) => {
   line.appendChild(document.createTextNode(message)); // textContent-safe, no HTML injection
   messagesContainer.appendChild(line);
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
+});
+
+
+socket.on('enemyEncounter', ({ enemy, player }) => {
+
+
 });

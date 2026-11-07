@@ -5,12 +5,10 @@ class EscapeRoom extends NothingRoom{
     #map;
     constructor(){
         super();
-        this.#type=2
+        this.setType(2);
 
-        let v = new NothingRoom();
-        this.#map = v.getMap();
         let rand = Math.floor(Math.random() * 2);
-        this.#map = [ [0,0,0,0,0,0,0,0,0,0],
+        let m = [ [0,0,0,0,0,0,0,0,0,0],
                  [0,0,0,0,0,0,0,0,0,0],
                  [0,0,0,0,0,0,0,0,0,0],
                  [2,0,0,0,0,0,0,0,0,1],
@@ -23,7 +21,7 @@ class EscapeRoom extends NothingRoom{
             ]
 
         if (rand == 0) {
-        this.#map = [ [0,0,0,0,0,0,0,0,0,0],
+        m = [ [0,0,0,0,0,0,0,0,0,0],
                  [0,0,0,0,0,0,0,0,0,0],
                  [0,0,0,0,0,0,0,0,0,0],
                  [1,0,0,0,0,0,0,0,0,2],
@@ -35,6 +33,7 @@ class EscapeRoom extends NothingRoom{
                  [0,0,0,0,0,0,0,0,0,0]
             ]
         }
+        this.setMap(m);
 
 }
 }

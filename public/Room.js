@@ -3,6 +3,8 @@ class Room {
     #type;
     constructor(){
         this.#type=-1;
+        this.#map = [[0,0,0,],[0,0,0],[0,0,0]]; // default map setup, should be overwritten by child classes
+        //so that the map was not undefined when the room was created, but it will be overwritten by the child classes
     }
 
     setValue(y, x, val){
@@ -22,6 +24,9 @@ class Room {
 
     getType() {
         return this.#type;
+    }
+    getValue(y, x) {
+        return this.#map[y][x];
     }
 }
 

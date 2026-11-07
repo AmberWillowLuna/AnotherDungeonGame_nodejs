@@ -4,10 +4,10 @@
 // repear kit - saves first used weapon
 // i dunno whats more sth for dungeons 
 
-class Item(){
-    #name;
+class Item{
+    _name;
     constructor(name){
-        this.#name=name;
+        this._name=name;
     }
 
     BreakUsedItem(){

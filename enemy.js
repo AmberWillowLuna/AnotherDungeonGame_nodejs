@@ -1,40 +1,55 @@
-import  './weapon.js';
+const { SharpMetal } = require("./weapon.js");
 
-class Enemy(){
-    #maxhp;
-    #hp;
-    #name;
-    #sprite;
-    #weapon;
-    #loot;
-    #power;
+class Enemy{
+        _maxhp;
+        _hp;
+        _name;
+        _sprite;
+        _weapon;
+        _loot;
+        _power;
+
     constructor(){
-        this.#maxhp = 1;
-        this.#hp = 1;
-        this.#name = "Enemy";
-        this.#sprite = null;
-        this.#weapon = null;
-        this.#loot = 0;
-        this.#power = 1;
+        this._maxhp = 1;
+        this._hp = 1;
+        this._name = "Enemy";
+        this._sprite = null;
+        this._weapon = null;
+        this._loot = 0;
+        this._power = 1;
     }
 
     hit(val, player){
-    this.#hp -= val;
-    if (this.#hp < 1) {
-        player.earn(this.#loot);
+    this._hp -= val;
+    if (this._hp < 1) {
+        player.earn(this._loot);
     }
     }
+    
 }
 
 class Goblin extends Enemy{
+    _maxhp;
+    _hp;
+    _name;
+    _sprite;
+    _weapon;
+    _loot;
+    _power;
+
     constructor(){
         super();
-        this.#maxhp = 2;
-        this.#hp = 2;
-        this.#name = "Goblin";
-        this.#sprite = null;
-        this.#weapon = new SharpMetal();
-        this.#loot = 4;
-        this.#power = 1;
+        this._maxhp = 2;
+        this._hp = 2;
+        this._name = "Goblin";
+        this._sprite = null;
+        this._weapon = new SharpMetal();
+        this._loot = 4;
+        this._power = 1;
     }
 }
+
+
+
+
+module.exports = { Goblin };

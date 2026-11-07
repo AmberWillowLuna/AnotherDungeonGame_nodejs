@@ -11,8 +11,10 @@ class Weapon{
     #breakability; // this is the description of how often it can break
     #durability; // this is how many times the weapon can break
     #dmg;
+    name;
 
-    constructor(value, swing, rarity, breakability) {
+    constructor(name,value, swing, rarity, breakability) {
+        this.name = name;
         this.#value = value;
         this.#swing = swing;
         this.#status = True;
@@ -41,56 +43,50 @@ class Weapon{
 
 class Knife extends Weapon{
     constructor(){
-        super(1, 4, 0, "weak")
+        super("Knife", 1, 4, 0, "weak")
     }
 }
 
 class SharpMetal extends Weapon{
     constructor(){
-        super(2,0,-1,"weak")
+        super("Sharp Metal", 2, 0, -1, "weak")
     }
 }
-
-class Knife extends Weapon{
-    constructor(){
-        super(1, 4, -1)
-    }
-}
-
 
 class Boomerang extends Weapon{
     constructor(){
-        super(1, 6, 1, "weak")
+        super("Boomerang", 1, 6, 1, "weak")
     }
 }
 
 class Dagger extends Weapon{
     constructor(){
-        super(2, 4, 1, "weak")
+        super("Dagger", 2, 4, 1, "weak")
     }
 }
 
 class Stick extends Weapon{
     constructor(){
-        super(2, 2, 1, "weak")
+        super("Stick", 2, 2, 1, "weak")
     }
 }
 
 class IceSpike extends Weapon{
     constructor(){
-        super(3, 4, 2, "weak")
+        super("Ice Spike", 3, 4, 2, "weak")
     }
 }
 
 class Bow extends Weapon{
     constructor(){
-        super(4, 8, 4, "weak")
+        super("Bow", 4, 8, 4, "weak")
     }
 }
 
 class Sword extends Weapon{
     constructor(){
-        super(5, 6, 5, "weak")
+        super("Sword", 5, 6, 5, "weak")
     }    
 }
 
+module.exports = {SharpMetal}

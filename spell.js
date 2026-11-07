@@ -1,19 +1,19 @@
-class Spell(){
-    #name;
-    #state;
+class Spell{
+    _name;
+    _state;
 
     constructor(name){
-        #state = True;
-        #name=name
+        this._state = True;
+        this._name = name;
     }
     Use(player, enemy){
-        #state = False
+        this._state = False;
         return
     }
 }
 
-class Rage(Spell){
-    constructor{
+class Rage extends Spell{
+    constructor(){
         super("Rage")
     }
     Use(player, enemy){
@@ -21,8 +21,8 @@ class Rage(Spell){
     }
 }
 
-class LifeSteal(Spell){
-    constructor{
+class LifeSteal extends Spell{
+    constructor(){
         super("Life Steal")
     }
     Use(player, enemy){
@@ -35,12 +35,12 @@ class LifeSteal(Spell){
     }
 }
 
-class ShadowBolt(Spell){
-    constructor{
+class ShadowBolt extends Spell{
+    constructor(){
         super("Shadow Bolt")
     }
     Use(player, enemy){
-        if player.hp>1 {
+        if (player.hp>1) {
             //attack implementation with bonus +5 base and +10 swing and
             // taking 2 enemy hp - i dunno how im gonna do it tho
             // taking 1 player hp

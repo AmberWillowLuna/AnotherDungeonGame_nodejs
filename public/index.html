@@ -15,6 +15,15 @@
         <h3>Choose nickname and color</h3>
         <input type="text" id="nickname" placeholder="Twój nick" maxlength="16">
         <input type="color" id="color" value="#ff0000">
+        <h3>Choose your class</h3>
+
+        <select id="classInput">
+            <option value="barbarian">Barbarian</option>
+            <option value="wizard">Wizard</option>
+            <option value="paladin">Paladin</option>
+            <option value="rogue">Rogue</option>
+            <option value="bard">Bard</option>
+        </select>
         <button id="joinBtn">Join</button>
       </div>
 
@@ -35,7 +44,21 @@
       </div>
     </div>
   </div>
-
+  <div>
+    <h3>cell translation</h3>
+    <p>Nothing: White <br>
+    Next room: Light Blue<br>
+   Exit: Blue<br>
+    Common chest: Peru<br>
+    Uncommon chest: Silver<br>
+    Rare chest: Gold<br>
+    Sus wall: Gray<br>
+    Statue: Orange<br>
+    Dungeon enter: Green (lightgreen) <br>
+    Enemies: Red <br>
+    Bosses: Dark Red <br>
+  </p>
+  </div>
   <script src="/socket.io/socket.io.js"></script>
   <script type="module" src="client.js"></script>
 </body>

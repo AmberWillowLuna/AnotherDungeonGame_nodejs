@@ -6,15 +6,13 @@ class TreasureRoom extends NothingRoom{
     constructor(number, rarity){
         super();
 
-        let v = new NothingRoom();
-        this.#map = v.getMap();
+        this.setType(3);
         if (rarity!=null){
 
             if (rarity.length() == number){
-                this.#type = 3;
 
                 for(let i=0;i<number;i++){
-                    this.#map.setValue(Math.floor(Math.random() * 4)+3, Math.floor(Math.random() * 4)+3, 6+rarity[i]); //rarity is an array with rarity of each chest
+                    this.setValue(Math.floor(Math.random() * 4)+3, Math.floor(Math.random() * 4)+3, 6+rarity[i]); //rarity is an array with rarity of each chest
                 }
             }
         }

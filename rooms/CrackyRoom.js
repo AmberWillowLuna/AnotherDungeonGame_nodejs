@@ -5,25 +5,23 @@ class CrackyRoom extends NothingRoom{
     #map;
     constructor(){
         super();
-        this.#type = 7;
-        let v = new NothingRoom();
-        this.#map = v.getMap();
+        this.setType(7);
         let rand = Math.floor(Math.random() * 2);
-        this.#map[0][3]=1;
-        this.#map[0][4]=1;
-        this.#map[0][5]=1;
-        this.#map[0][6]=1;        
+        this.setValue(0, 3, 1);
+        this.setValue(0, 4, 1);
+        this.setValue(0, 5, 1);
+        this.setValue(0, 6, 1);
         if (rand == 0) {
-            this.#map[3][0]=15;
-            this.#map[4][0]=15;
-            this.#map[5][0]=15;
-            this.#map[6][0]=15;
+            this.setValue(3, 0, 15);
+            this.setValue(4, 0, 15);
+            this.setValue(5, 0, 15);
+            this.setValue(6, 0, 15);
         }
         else if (rand == 1) {
-            this.#map[3][9]=15;
-            this.#map[4][9]=15;
-            this.#map[5][9]=15;
-            this.#map[6][9]=15;
+            this.setValue(3, 9, 15);
+            this.setValue(4, 9, 15);
+            this.setValue(5, 9, 15);
+            this.setValue(6, 9, 15);
         }
     }
 }
